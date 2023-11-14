@@ -1,13 +1,17 @@
 const connection = require('../config/database');
-exports.createUser = async (req, res) => {
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+exports.createUser = async (req,res) => {
     try {
       const { full_name, email, password, role } = req.body;
-      const query = `INSERT INTO users (full_name, email, password, role) VALUES ('${full_name}','${email}','${password}','${role}')`;
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const query = `INSERT INTO users (role, full_name, email, password) VALUES ('${role}','${full_name}','${email}','${hashedPassword}')`;
       const [result] = await connection.promise().query(query);
       if(!result){
         throw new Error("could not add");
       }
       const user=result[0];
+      const token = jwt.sign({user}, process.env.SECRET_VALUE, { expiresIn: '1d' });
       res.status(201).json({user,token}); 
     } catch (error) {
       console.error('Error adding user:', error);
@@ -78,6 +82,9 @@ exports.createUser = async (req, res) => {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       
       if (isPasswordValid) {
+        const token = jwt.sign(user, process.env.SECRET_VALUE, { expiresIn: '1d' });
+        res.status(201).json({user,token}); 
+      } else {
         res.status(401).json({ error: 'failed' });
       }
     } catch (error) {
