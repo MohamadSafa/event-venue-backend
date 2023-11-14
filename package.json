@@ -5,7 +5,7 @@
   "main": "server.js",
   "repository": "https://github.com/MohamadSafa/event-venue-backend",
   "author": "Mohamad",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "private": false,
   "dependencies": {
     "cors": "^2.8.5",

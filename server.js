@@ -5,8 +5,8 @@ const connection = require('./config/database');
 const eventRouter = require('./routes/eventRoute');
 const reservationRouter = require('./routes/reservationRoute');
 const userRouter = require('./routes/userRoute');
-const venueRouter = require('./routes/enrollementRoute');
-const classRouter = require('./routes/classRoute');
+const venueRouter = require('./routes/venueRoute');
+
 
 //const PORT = process.env.PORT;
 
@@ -18,6 +18,6 @@ app.use('/reservations', reservationRouter);
 app.use('/venues', venueRouter);
 
 
-app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+app.listen(5000, () => {
+  console.log(`Server started on port 5000`);
 });
