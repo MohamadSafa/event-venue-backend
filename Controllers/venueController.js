@@ -1,11 +1,12 @@
 const { response } = require("express");
-const connection = require("../config/database");
-
+const connection = require("../config/database/connection");
+const {imageUploader} = require("../extra/imageUploader");
 // HON AAM BAAML AAD
 exports.addVenue = async (req, res) => {
   try {
     const { name, description, capacity, image, address } = req.body;
-    const query = `INSERT INTO venues (name,description,capacity,image,address) VALUES (${name},'${description}','${capacity}','${image}','${address}')`;
+    const imageURL = await imageUploader(req.file);
+    const query = `INSERT INTO venues (name,description,capacity,image,address) VALUES ('${name}','${description}',${capacity},'${imageURL}','${address}')`;
     const [results] = await connection.promise().query(query);
     res.status(201).json(results);
   } catch (error) {
@@ -75,7 +76,8 @@ exports.updateVenue = async (req, res) => {
   const venueId = req.params.id;
   const { name, description, capacity, image, address } = req.body;
   try {
-    const query = `UPDATE venues SET name="${name}",description="${description},capacity="${capacity},image="${image},address="${address}" WHERE venue_id=${venueId}`;
+    const imageURL = await imageUploader(req.file);
+    const query = `UPDATE venues SET name='${name}',description='${description}',capacity=${capacity},image='${imageURL}',address='${address}' WHERE venue_id=${venueId}`;
     const [result] = await connection.promise().query(query);
     res.status(200).json(result);
   } catch (error) {
